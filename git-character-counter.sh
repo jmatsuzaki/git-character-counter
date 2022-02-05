@@ -3,7 +3,8 @@
 ### Definition
 fm="^(---|uid|title|aliases|date|update|tags|draft)" #Ignore Front Matter
 wcOpt="-m"
-target="--cached"
+from="@"
+to="--cached"
 
 ### Create help (-h | --help)
 function usage {
@@ -15,22 +16,38 @@ Usage:
   $(basename "$0") [OPTION]...
 
 Options:
-  -h          Display this help
-  -w          Count words instead of characters
-  -L          Target the last commit instead of the staging file
+  -f  [VALUE]   Starting point for comparison. [N] times before or by [DATE]. Default is HEAD.
+  -t  [VALUE]   Endpoint point for comparison. [N] times before or by [DATE]. Default is Staging.
+  -w            Count words instead of characters
+  -h            Display this help
 EOM
 
   exit 1
 }
 
 ### Process definition by argument
-while getopts ":wLh" optKey; do
+while getopts ":f:t:wh" optKey; do
   case "$optKey" in
+    f)
+      # numeric checking
+      if expr "$OPTARG" : "[0-9]*$" >&/dev/null; then
+        from="@~${OPTARG}"
+      else
+        from="@{${OPTARG}}"
+      fi
+      echo "from: $from"
+      ;;
+    t)
+      # numeric checking
+      if expr "$OPTARG" : "[0-9]*$" >&/dev/null; then
+        to="@~${OPTARG}"
+      else
+        to="@{${OPTARG}}"
+      fi
+      echo "to: $to"
+      ;;
     w)
       wcOpt="-w"
-      ;;
-    L)
-      target="HEAD^"
       ;;
     h)
       usage
@@ -46,7 +63,7 @@ done
 
 ### Function of count characters of words
 character-count () {
-  git diff -p -b -w $target --diff-filter=AM --ignore-cr-at-eol --ignore-space-at-eol --ignore-blank-lines --ignore-matching-lines=$fm | grep ^+ | grep -v ^+++ | sed s/^+// | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n//g' | wc $wcOpt
+  git diff -p -b -w "$to" "$from" --diff-filter=AM --ignore-cr-at-eol --ignore-space-at-eol --ignore-blank-lines --ignore-matching-lines=$fm | grep ^+ | grep -v ^+++ | sed s/^+// | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n//g' | wc $wcOpt
 }
 
 ### Main
