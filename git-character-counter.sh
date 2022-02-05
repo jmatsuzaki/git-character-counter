@@ -1,45 +1,54 @@
 #!/bin/bash
 
-# Create help (-h | --help)
+### Definition
+fm="^(---|uid|title|aliases|date|update|tags|draft)" #Ignore Front Matter
+wcOpt="-m"
+target="--cached"
+
+### Create help (-h | --help)
 function usage {
   cat <<EOM
-Usage: $(basename "$0") [OPTION]...
-  -h          Display help
-  -a VALUE    A explanation for arg called a
-  -b VALUE    A explanation for arg called b
-  -c VALUE    A explanation for arg called c
-  -d VALUE    A explanation for arg called d
+Description:
+  This is a shell script to count the number of additional characters from the git diff results
+
+Usage:
+  $(basename "$0") [OPTION]...
+
+Options:
+  -h          Display this help
+  -w          Count words instead of characters
+  -L          Target the last commit instead of the staging file
 EOM
 
-  exit 2
+  exit 1
 }
 
-# 引数別の処理定義
-while getopts ":a:b:c:d:h" optKey; do
+### Process definition by argument
+while getopts ":wLh" optKey; do
   case "$optKey" in
-    a)
-      echo "-a = ${OPTARG}"
+    w)
+      wcOpt="-w"
       ;;
-    b)
-      echo "-b = ${OPTARG}"
+    L)
+      target="HEAD^"
       ;;
-    c)
-      echo "-c = ${OPTARG}"
+    h)
+      usage
       ;;
-    d)
-      echo "-d = ${OPTARG}"
-      ;;
-    '-h'|'--help'|* )
+    *)
+      echo "[ERROR] Undefined options."
+      echo "  Please check the Usage"
+      echo ""
       usage
       ;;
   esac
 done
 
-# Function of count characters of words
+### Function of count characters of words
 character-count () {
-  git diff -p -b -w --cached --diff-filter=AM --ignore-cr-at-eol --ignore-space-at-eol --ignore-blank-lines --ignore-matching-lines="^(---|uid|title|aliases|date|update|tags|draft)" | grep ^+ | grep -v ^+++ | sed s/^+// | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n//g' | wc -m
+  git diff -p -b -w $target --diff-filter=AM --ignore-cr-at-eol --ignore-space-at-eol --ignore-blank-lines --ignore-matching-lines=$fm | grep ^+ | grep -v ^+++ | sed s/^+// | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n//g' | wc $wcOpt
 }
 
-# Total number of additional characters for files in the working tree
+### Main
 characterCount=`character-count`
 echo $characterCount
