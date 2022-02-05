@@ -3,6 +3,7 @@
 ### Definition
 fm="^(---|uid|title|aliases|date|update|tags|draft)" #Ignore Front Matter
 wcOpt="-m"
+countUnit="Characters"
 from="@"
 to="--cached"
 
@@ -48,6 +49,7 @@ while getopts ":f:t:wh" optKey; do
       ;;
     w)
       wcOpt="-w"
+      countUnit="Words"
       ;;
     h)
       usage
@@ -67,5 +69,15 @@ character-count () {
 }
 
 ### Main
+echo ""
+echo "================================================="
+echo "Welcome to git diff character counter"
+echo "================================================="
+echo ""
+echo "The target files are as follows:"
+echo `git diff -p -b -w --name-status "$to" "$from" --diff-filter=AM`
+echo ""
+echo "The number of $countUnit added is as follows:"
 characterCount=`character-count`
-echo $characterCount
+echo "Total: $characterCount"
+echo ""
