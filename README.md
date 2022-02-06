@@ -1,1 +1,3 @@
-# git-character-counter
+# Git Character Counter #
+
+
