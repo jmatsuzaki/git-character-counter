@@ -51,9 +51,9 @@ Just run "git-character-counter.sh" in a shell.
 
 By default, it calculates the number of characters from the difference between the staged file and HEAD.
 
-Note that it is a stage, not a working tree.
+Note that it is a Staging area (Index), not a Working directory.
 
-The reason for this is that you can choose the target of the calculation even from within the working tree. And you can also target new files by targeting a stage.
+The reason for this is that you can choose the target of the calculation even from within the Working directory. And you can also target new files by targeting a stage.
 
 So, run this shell script after staging the file for which you want to calculate the number of characters.
 
