@@ -147,6 +147,35 @@ For example, if you put the following in the pre-commit hook of Git Hooks(.git/h
 bash /foo/bar/git-character-counter.sh
 ```
 
+In this example, when you commit, you will see a message like the following:
+
+```bash
+=================================================
+Welcome to git character counter
+=================================================
+
+Target commits are as follows:
+From:@..To:--cached
+
+The target files are as follows:
+M	20210108145021.md
+
+The number of Characters added is as follows:
+Total:       39
+
+[master fbaa44f] Git Character Counter test
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 10 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 408 bytes | 408.00 KiB/s, done.
+Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To github.com:jmatsuzaki/Zettelkasten.git
+   16cae33..fbaa44f  master -> master
+```
+
 ## Future works (TODO) ##
 
 - Improvement of front matter support
